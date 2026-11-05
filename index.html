@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oxidative Decarboxylierung und Citratzyklus</title>
+<style>
+:root{
+  --bg:#fbf7f0; --card:#ffffff; --ink:#1f2430; --muted:#5d6475; --line:#e6dfd2;
+  --c:#2d3142; --o:#d6453d; --nadh:#2f7de1; --fadh:#f08a24; --atp:#e5b800; --co2:#8d99ae;
+  --ok:#2a9d5c; --bad:#d6453d; --accent:#7b4bd6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1060px;margin:0 auto;padding:0 16px 90px}
+header{padding:38px 0 8px;text-align:center}
+header h1{font-size:clamp(26px,4.6vw,42px);line-height:1.15;margin:0 0 10px}
+header p{max-width:680px;margin:0 auto;color:var(--muted)}
+section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:22px 0;box-shadow:0 2px 0 rgba(0,0,0,.03)}
+h2{margin:0 0 6px;font-size:clamp(21px,3.3vw,28px)}
+h2 .n{display:inline-block;background:var(--accent);color:#fff;border-radius:50%;width:1.6em;height:1.6em;text-align:center;line-height:1.6em;font-size:.8em;margin-right:8px}
+.lead{color:var(--muted);margin-top:0}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.legend div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fffdf9;font-size:15px}
+.legend big{font-size:24px;display:block;line-height:1.3}
+.cdot{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--c);vertical-align:middle}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;justify-content:center}
+.flow .st{flex:1 1 150px;max-width:210px;border-radius:12px;padding:10px;text-align:center;font-size:14px;border:2px solid var(--line);background:#fffdf9}
+.flow .st.hot{border-color:var(--accent);background:#f4eeff;font-weight:600}
+.flow .ar{align-self:center;font-size:22px;color:var(--muted)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:10px 16px;background:var(--accent);color:#fff;font-weight:600;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:44px}
+button.ghost{background:#ece6f7;color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b9a0f0;outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;align-items:center}
+select{font:inherit;padding:8px;border-radius:10px;border:1px solid var(--line);background:#fff;min-height:44px}
+.chip{display:inline-block;border-radius:999px;padding:3px 12px;font-size:14px;font-weight:600;margin:2px;color:#fff}
+.chip.co2{background:var(--co2)}.chip.nadh{background:var(--nadh)}.chip.fadh{background:var(--fadh)}.chip.atp{background:var(--atp);color:#2a2300}.chip.in{background:var(--ok)}.chip.none{background:#9aa0ae}.chip.cb{background:#f4eeff;color:var(--accent);border:1px solid #d9c9f5}
+.enz{font-size:13px;color:var(--muted);border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+.panel{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fffdf9}
+.note{background:#fff6d9;border-left:5px solid var(--atp);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:15px}
+.tip{background:#eaf6ee;border-left:5px solid var(--ok);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:15px}
+.opt2{display:block;font-size:14px;margin-top:10px}
+.opt2 input{width:20px;height:20px;vertical-align:middle;margin-right:6px}
+svg text{font-family:inherit}
+/* Animationen */
+.el{transition:transform 1s ease,opacity .7s ease}
+.gear{transform-origin:210px 238px}
+.run .gear{animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spOut{0%{transform:translate(var(--x0),var(--y0)) scale(.6);opacity:0}15%{opacity:1}80%{opacity:1}100%{transform:translate(var(--x1),var(--y1)) scale(1);opacity:0}}
+@keyframes spIn{0%{transform:translate(var(--x0),var(--y0)) scale(1);opacity:0}15%{opacity:1}80%{opacity:1}100%{transform:translate(var(--x1),var(--y1)) scale(.6);opacity:0}}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.4)}100%{transform:scale(1)}}
+.sp{animation:spOut 2s ease-in-out both}
+.sp.in{animation-name:spIn}
+.pop{animation:pop .6s ease both;transform-box:fill-box;transform-origin:center}
+@media(prefers-reduced-motion:reduce){.el{transition:none}.sp,.pop,.run .gear{animation:none}}
+/* Station A */
+.pdwrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:820px){.pdwrap{grid-template-columns:1fr}}
+.pdwrap svg{display:block;width:100%;max-width:520px;height:auto;margin:0 auto;background:#fffdf9;border:1px solid var(--line);border-radius:14px}
+.prog{display:flex;gap:6px;margin:0 0 10px}
+.prog i{flex:1;height:6px;border-radius:3px;background:#e6dfd2;transition:background .4s}
+.prog i.on{background:var(--accent)}
+.eq{font-weight:600;margin:8px 0 0;font-size:15px}
+/* Zyklus */
+.cycwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fffdf9}
+.cycwrap svg{display:block;width:100%;height:auto}
+@media(min-width:721px){.cycwrap svg{min-width:780px}}
+.strip{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:12px}
+.strip div{border:1px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;font-size:12px;background:#fffdf9;transition:background .4s,border-color .4s}
+.strip div.on{background:#f4eeff;border-color:var(--accent)}
+.strip b{display:block;font-size:12px;line-height:1.25;min-height:2.5em}
+.strip .d{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin:1px}
+@media(max-width:720px){.strip{grid-template-columns:repeat(4,1fr)}}
+.cycbelow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;margin-top:14px}
+@media(max-width:820px){.cycbelow{grid-template-columns:1fr}}
+.score{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.score div{border-radius:12px;padding:8px 4px;background:#f3f0ea;font-size:13px}
+.score b{display:block;font-size:26px}
+.ctrl{position:sticky;bottom:0;z-index:5;display:flex;gap:8px;margin:12px -4px 0;padding:10px 4px;background:rgba(255,255,255,.96);border-top:1px solid var(--line)}
+.ctrl button{flex:1 1 auto}
+.ctrl .main{flex:3 1 auto}
+.mlegend{display:none;font-size:13px;color:var(--muted);margin:8px 0 0}
+/* Bilanz */
+.atoms{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;justify-items:center;padding:18px 0 4px}
+.atom{position:relative;width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .8s,transform .8s}
+.atom i{position:absolute;top:10px;width:15px;height:15px;border-radius:50%;background:var(--o);color:#fff;font-size:9px;font-style:normal;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .8s,transform .8s}
+.atom i.l{left:-9px;transform:translateX(8px)}.atom i.r{right:-9px;transform:translateX(-8px)}
+.atom.rel{background:var(--co2);transform:translateY(-8px)}
+.atom.rel i{opacity:1;transform:none}
+.caps{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;font-size:13px;text-align:center}
+.caps div{border-top:3px solid var(--line);padding-top:4px;color:var(--muted)}
+.caps div.rel{border-color:var(--co2)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+th{background:#f3f0ea}
+/* Quiz */
+.qbar{position:sticky;top:0;z-index:4;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:12px 0}
+.qbar b{font-size:20px;color:var(--accent)}
+.meter{flex:1 1 140px;height:8px;border-radius:4px;background:#ece6f7;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .5s}
+.q{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0;background:#fffdf9}
+.q p{margin:0 0 8px;font-weight:600}
+.q .k{font-weight:400;color:var(--muted);font-size:13px}
+.q button.opt{display:block;width:100%;text-align:left;margin:6px 0;background:#f3f0ea;color:var(--ink);font-weight:500}
+.q button.opt.right{background:#d4f0de}.q button.opt.wrong{background:#f8d9d6}
+.q input{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);width:110px;min-height:44px}
+.q .fb{font-size:15px;margin-top:8px;min-height:1.2em}
+details{margin:8px 0}
+summary{cursor:pointer;font-weight:600}
+footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
+@media(max-width:720px){
+  body{font-size:16px}
+  main{padding:0 10px 90px}
+  header{padding:22px 0 6px}
+  section{padding:14px;margin:14px 0;border-radius:14px}
+  .mlegend{display:block}
+  .score b{font-size:22px}
+  table{font-size:12.5px}th,td{padding:5px 3px}
+  .flow .ar{transform:rotate(90deg);flex:1 0 100%;text-align:center}
+  .flow .st{max-width:none;flex:1 0 100%}
+  .atom{width:30px;height:30px;font-size:13px}.atom i{top:8px}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Oxidative Decarboxylierung und Citratzyklus</h1>
+  <p>Interaktive Animation: Der Weg der Kohlenstoffatome und der Reduktionsäquivalente. Das CO₂, das du ausatmest, stammt aus dem Abbau von Nährstoffen. Hier siehst du Schritt für Schritt, wo es entsteht und wo dabei Energie gewonnen wird.</p>
+</header>
+
+<!-- 0 -->
+<section>
+  <h2><span class="n">0</span>Legende</h2>
+  <p class="lead">Wir verfolgen das <b>Kohlenstoffgerüst</b>: Jedes Kohlenstoffatom (C) wird als Kreis <span class="cdot" style="width:14px;height:14px"></span> dargestellt. Der Energiegewinn steckt in den Transportmolekülen.</p>
+  <div class="legend">
+    <div><big><span class="cdot"></span></big><b>Kohlenstoffatom (C)</b><br>Glucose hat 6 C-Atome (C₆). Gezählt wird die Kohlenstoffbilanz.</div>
+    <div><big>💨</big><b>CO₂</b><br>Ein C-Atom verlässt das Molekül und wird später ausgeatmet.</div>
+    <div><big>🚕</big><b>NAD⁺ / NADH + H⁺</b><br>Modell: NAD⁺ ist das leere Taxi, NADH + H⁺ das Taxi mit „Fahrgast“ (Wasserstoff bzw. Elektronen). Es fährt zur Atmungskette.</div>
+    <div><big>🛺</big><b>FAD / FADH₂</b><br>Das kleinere Taxi mit gleicher Aufgabe.</div>
+    <div><big>🪫 ➜ 🔋</big><b>ADP ➜ ATP</b><br>ADP = leere, ATP = volle Batterie.</div>
+  </div>
+  <div class="tip"><b>Ort:</b> Die Glykolyse läuft im Zellplasma. Das Pyruvat wird in die <b>Matrix der Mitochondrien</b> transportiert. Dort laufen die oxidative Decarboxylierung und der Citratzyklus ab.</div>
+</section>
+
+<!-- 1 -->
+<section>
+  <h2><span class="n">1</span>Einordnung</h2>
+  <div class="flow">
+    <div class="st">Glykolyse<br><small>Zellplasma</small><br>Glucose (C₆) → 2 Pyruvat (je C₃)</div>
+    <div class="ar">➜</div>
+    <div class="st hot">Oxidative Decarboxylierung<br><small>Mitochondrien-Matrix</small><br>Pyruvat (C₃) → Acetyl-CoA (C₂)</div>
+    <div class="ar">➜</div>
+    <div class="st hot">Citratzyklus<br><small>Mitochondrien-Matrix</small><br>Acetyl-CoA (C₂) → 2 CO₂</div>
+    <div class="ar">➜</div>
+    <div class="st">Atmungskette<br><small>innere Membran</small><br>Reduktionsäquivalente liefern ab, ATP entsteht</div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <h2><span class="n">2</span>Oxidative Decarboxylierung</h2>
+  <p class="lead">Spiele die Animation ab oder schalte mit „Schritt“ weiter. Beachte, was mit den Kohlenstoffatomen passiert.</p>
+  <div class="pdwrap">
+    <svg id="pdSvg" viewBox="0 0 420 392" role="img" aria-label="Animation: Pyruvat wird im Pyruvat-Dehydrogenase-Komplex zu Acetyl-CoA, CO2 und NADH">
+      <rect x="84" y="150" width="252" height="110" rx="16" fill="#f4eeff" stroke="#7b4bd6" stroke-width="2.5"/>
+      <text x="210" y="172" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7b4bd6">Pyruvat-Dehydrogenase-Komplex</text>
+      <text class="gear" x="210" y="246" text-anchor="middle" font-size="16">⚙️</text>
+      <!-- Umrandungen -->
+      <rect id="p_envPyr" class="el" x="-78" y="-26" width="156" height="52" rx="14" fill="none" stroke="#9aa0ae" stroke-width="1.8" stroke-dasharray="5 4"/>
+      <rect id="p_envAc" class="el" x="-82" y="-26" width="164" height="52" rx="14" fill="none" stroke="#9aa0ae" stroke-width="1.8" stroke-dasharray="5 4" opacity="0"/>
+      <rect id="p_envCO2" class="el" x="-52" y="-22" width="104" height="44" rx="14" fill="none" stroke="#9aa0ae" stroke-width="1.8" stroke-dasharray="5 4" opacity="0"/>
+      <!-- Atome -->
+      <g id="p_a1" class="el"><circle r="15" fill="#2d3142"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">C</text></g>
+      <g id="p_a2" class="el"><circle r="15" fill="#2d3142"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">C</text></g>
+      <g id="p_a3" class="el"><circle r="15" fill="#2d3142"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">C</text></g>
+      <g id="p_o1" class="el"><circle r="8" fill="#d6453d"/><text y="3.2" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">O</text></g>
+      <g id="p_o2" class="el"><circle r="8" fill="#d6453d"/><text y="3.2" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">O</text></g>
+      <g id="p_coa" class="el"><rect x="-21" y="-12" width="42" height="24" rx="6" fill="#fff" stroke="#7b4bd6" stroke-width="1.8"/><text y="4" text-anchor="middle" font-size="12" font-weight="700" fill="#7b4bd6">CoA</text></g>
+      <text id="p_tx" class="el" text-anchor="middle" dominant-baseline="central" font-size="28">🚕</text>
+      <g id="p_hp" class="el" opacity="0"><circle r="8.5" fill="#2f7de1"/><text y="3.5" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">H</text></g>
+      <!-- Beschriftungen -->
+      <text id="p_lblPyr" class="el" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2430">Pyruvat (C₃)</text>
+      <text id="p_lblNAD" class="el" text-anchor="middle" font-size="12" fill="#5d6475">NAD⁺</text>
+      <text id="p_lblCoA" class="el" text-anchor="middle" font-size="12" fill="#5d6475">Coenzym A</text>
+      <text id="p_lblAc" class="el" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2430" opacity="0">Acetyl-CoA (C₂)</text>
+      <text id="p_lblCO2" class="el" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2430" opacity="0">CO₂</text>
+      <text id="p_lblNADH" class="el" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2430" opacity="0">NADH + H⁺</text>
+    </svg>
+    <div>
+      <div class="prog" id="pdProg"><i></i><i></i><i></i><i></i></div>
+      <div class="panel" id="pdText"></div>
+      <p class="eq" id="pdEq"></p>
+      <div class="row">
+        <button class="ghost" id="pdPrev">◀</button>
+        <button id="pdNext">Schritt ▶</button>
+        <button class="ghost" id="pdPlay">▶ Abspielen</button>
+        <button class="ghost" id="pdReset">↺</button>
+      </div>
+    </div>
+  </div>
+  <details open>
+    <summary>Begriffe</summary>
+    <p><b>Decarboxylierung:</b> Eine Carboxylgruppe wird als CO₂ abgespalten. Das Kohlenstoffgerüst verkürzt sich um ein C-Atom (C₃ → C₂).<br>
+    <b>Oxidativ:</b> Elektronen bzw. Wasserstoff werden abgegeben. Das Coenzym NAD⁺ nimmt sie auf und wird zu NADH + H⁺ reduziert. Das Enzym ist daher eine <i>Dehydrogenase</i>.</p>
+    <p><b>Bilanz pro Glucose</b> (2 Pyruvat, der Schritt läuft 2×): 2 CO₂, 2 NADH + H⁺, 2 Acetyl-CoA.</p>
+  </details>
+</section>
+
+<!-- 3 -->
+<section>
+  <h2><span class="n">3</span>Citratzyklus</h2>
+  <p class="lead">Acht Schritte im Kreis. Beobachte, wie das Kohlenstoffgerüst wächst (C₄ → C₆) und wieder schrumpft (C₆ → C₄), und was bei jedem Schritt hinein- und herausgeht.</p>
+  <div class="cycwrap">
+    <svg id="ring" viewBox="0 0 1020 800" role="img" aria-label="Citratzyklus als Kreis mit acht Stationen und den jeweiligen Ein- und Ausgängen"></svg>
+  </div>
+  <p class="mlegend">💨 CO₂ raus · 🚕 NADH + H⁺ · 🛺 FADH₂ · 🔋 ATP · 💧 H₂O · ● = C-Atome</p>
+  <div class="strip" id="cStrip"></div>
+  <div class="cycbelow">
+    <div class="panel" id="cInfo"></div>
+    <div>
+      <div class="score" id="cScore"></div>
+      <label class="opt2"><input type="checkbox" id="cTimes2"> Hochrechnen auf <b>1 Glucose</b> (Zyklus läuft 2×)</label>
+      <label class="opt2"><input type="checkbox" id="cAll"> Alle Ein- und Ausgänge im Kreis anzeigen</label>
+      <label class="opt2">Tempo: <select id="cSpeed"><option value="1.6">langsam</option><option value="1" selected>normal</option><option value="0.6">schnell</option></select></label>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button class="ghost" id="cBack">◀</button>
+    <button class="main" id="cNext">Nächster Schritt ▶</button>
+    <button class="ghost" id="cPlay">▶ Abspielen</button>
+    <button class="ghost" id="cReset">↺</button>
+  </div>
+  <div class="tip"><b>Jeder Schritt hat ein eigenes Enzym.</b> Enzyme senken die Aktivierungsenergie und sind einzeln regulierbar. Die Namen stehen im Infofeld in grau. Entscheidend ist die Wirkung.</div>
+  <div class="note"><b>Kohlenstoffbilanz:</b> Pro Runde gehen 2 C-Atome als Acetyl hinein und 2 C-Atome als 2 CO₂ heraus. Das Oxalacetat (C₄) wird zurückgebildet. Die Energie steckt danach in 3 NADH + H⁺ 🚕, 1 FADH₂ 🛺 und 1 ATP 🔋.</div>
+</section>
+
+<!-- 4 -->
+<section>
+  <h2><span class="n">4</span>Gesamtbilanz einer Glucose</h2>
+  <p class="lead">Wähle eine Station oder spiele den Abbau ab: Alle 6 C-Atome der Glucose enden als CO₂.</p>
+  <div class="row" id="stTabs"></div>
+  <div class="panel">
+    <div class="atoms" id="atoms"></div>
+    <div class="caps" id="atomCaps"></div>
+    <div id="stMsg" style="margin-top:12px"></div>
+  </div>
+  <div class="row"><button class="ghost" id="stPlay">▶ Abbau abspielen</button></div>
+  <table style="margin-top:10px">
+    <thead><tr><th>Gesamt pro Glucose</th><th>💨 CO₂</th><th>🚕 NADH + H⁺</th><th>🛺 FADH₂</th><th>🔋 ATP</th></tr></thead>
+    <tbody id="stTable"></tbody>
+  </table>
+  <div class="note"><b>Zur ATP-Zahl:</b> Das ist der <i>direkte</i> Gewinn durch Substratkettenphosphorylierung. Den Hauptteil des ATP liefert die Atmungskette, wenn die Reduktionsäquivalente dort abgeben. Dort wird auch der Sauerstoff benötigt. <b>Das ausgeatmete CO₂ stammt aus dem Kohlenstoff der Glucose, nicht aus dem O₂.</b></div>
+</section>
+
+<!-- 5 -->
+<section>
+  <h2><span class="n">5</span>Selbsttest mit Punkten</h2>
+  <p class="lead">Zehn Fragen. Richtig im ersten Versuch: 2 Punkte, im zweiten Versuch: 1 Punkt. Nach jeder Antwort gibt es eine Erklärung.</p>
+  <div class="qbar"><span>Punkte: <b id="qPts">0</b> / <span id="qMax">20</span></span><span>Beantwortet: <b id="qDone">0</b> / <span id="qN">10</span></span><div class="meter"><i id="qMeter"></i></div></div>
+  <div id="quiz"></div>
+  <div id="quizScore" class="note" style="display:none"></div>
+  <div class="row"><button class="ghost" id="qReset">↺ Selbsttest neu starten</button></div>
+</section>
+
+<!-- 6 -->
+<section>
+  <h2>Vertiefung</h2>
+  <details><summary>Welche C-Atome verlassen den Zyklus wirklich?</summary>
+    <p>Die zwei CO₂ einer Runde stammen <b>nicht</b> aus dem Acetyl, das in derselben Runde hineinkam, sondern aus dem Oxalacetat-Anteil. Die Acetyl-Kohlenstoffe laufen im Kreis mit und werden erst in späteren Runden abgegeben. Für die Mengenbilanz („2 rein, 2 raus“) ist das unerheblich, für die Atomverfolgung nicht. Auch die Darstellung in der Bilanz-Animation (welches Atom wann entweicht) ist daher vereinfacht.</p></details>
+  <details><summary>GTP oder ATP in Schritt 5?</summary>
+    <p>Je nach Gewebe entsteht dort GTP oder ATP. Beide sind energetisch gleichwertig. In vielen Abbildungen steht direkt „ADP + Pᵢ → ATP“.</p></details>
+  <details><summary>Wie viel ATP entsteht insgesamt?</summary>
+    <p>Das hängt vom Wert ab, der pro NADH + H⁺ und pro FADH₂ angesetzt wird. Lehrbücher nutzen verschiedene Werte. Rechne so, wie es dein Lehrbuch bzw. deine Lehrkraft vorgibt.</p></details>
+  <details><summary>Wo sitzt die Succinat-Dehydrogenase?</summary>
+    <p>In der inneren Mitochondrienmembran. Sie ist zugleich Komplex II der Atmungskette. Alle anderen Enzyme des Zyklus liegen gelöst in der Matrix.</p></details>
+</section>
+
+<footer>Oxidative Decarboxylierung und Citratzyklus · Biologie Sek II (eA)</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function speed(){ return parseFloat($('cSpeed').value) || 1; }
+
+/* ================= Station A: Animation ================= */
+const AS = {
+  a1:[[160,50],[160,215],[160,215],[62,322]],
+  a2:[[200,50],[200,215],[200,215],[102,322]],
+  a3:[[240,50],[240,215],[340,322],[340,322]],
+  o1:[[262,38],[262,203],[316,322],[316,322]],
+  o2:[[262,62],[262,227],[364,322],[364,322]],
+  coa:[[355,112],[302,215],[302,215],[150,322]],
+  tx:[[62,112],[112,215],[112,215],[250,326]],
+  hp:[[130,205,0],[130,205,0],[130,205,0],[268,312,1]],
+  envPyr:[[207,50,1],[207,215,1],[207,215,0],[207,215,0]],
+  envAc:[[108,322,0],[108,322,0],[108,322,0],[108,322,1]],
+  envCO2:[[340,322,0],[340,322,0],[340,322,1],[340,322,1]],
+  lblPyr:[[207,96,1],[207,96,0],[207,96,0],[207,96,0]],
+  lblNAD:[[62,142,1],[62,142,0],[62,142,0],[62,142,0]],
+  lblCoA:[[355,142,1],[355,142,0],[355,142,0],[355,142,0]],
+  lblAc:[[108,364,0],[108,364,0],[108,364,0],[108,364,1]],
+  lblCO2:[[340,364,0],[340,364,0],[340,364,1],[340,364,1]],
+  lblNADH:[[250,364,0],[250,364,0],[250,364,0],[250,364,1]]
+};
+const PT = [
+  {t:'Ausgangslage', d:'Das Pyruvat (C₃) aus der Glykolyse wurde in die Mitochondrienmatrix transportiert. Dort wartet der Pyruvat-Dehydrogenase-Komplex, eine Einheit aus drei Enzymen. Bereitgestellt werden NAD⁺ (leeres Taxi) und Coenzym A.', e:'Pyruvat (C₃) + NAD⁺ + CoA'},
+  {t:'Bindung im Enzymkomplex', d:'Pyruvat und die Coenzyme werden im Komplex zusammengeführt. Alle folgenden Teilschritte laufen an diesem einen Enzymkomplex ab.', e:'Pyruvat (C₃) + NAD⁺ + CoA'},
+  {t:'Decarboxylierung', d:'Die Carboxylgruppe wird als CO₂ abgespalten. Ein Kohlenstoffatom verlässt das Molekül: <b>C₃ → C₂</b>. Das CO₂ diffundiert aus der Zelle und wird später ausgeatmet.', e:'Pyruvat (C₃) → C₂-Rest + CO₂'},
+  {t:'Oxidation und Übertragung', d:'Der C₂-Rest (Acetylgruppe) wird oxidiert: Wasserstoff bzw. Elektronen gehen auf NAD⁺ über, das Taxi ist beladen (NADH + H⁺). Der Acetylrest wird an Coenzym A gebunden: <b>Acetyl-CoA</b>.', e:'Pyruvat (C₃) + NAD⁺ + CoA → Acetyl-CoA (C₂) + CO₂ + NADH + H⁺'}
+];
+let pdS = 0, pdTimer = null;
+function applyA(){
+  for(const k in AS){
+    const el = $('p_'+k), v = AS[k][pdS];
+    el.style.transform = `translate(${v[0]}px,${v[1]}px)`;
+    if(v.length > 2) el.style.opacity = v[2];
+  }
+  $('pdText').innerHTML = `<b>Schritt ${pdS+1} von 4: ${PT[pdS].t}</b><br>${PT[pdS].d}`;
+  $('pdEq').textContent = PT[pdS].e;
+  $('pdProg').querySelectorAll('i').forEach((x,i) => x.classList.toggle('on', i <= pdS));
+  $('pdPrev').disabled = pdS === 0;
+  $('pdNext').disabled = pdS === 3;
+  $('pdSvg').classList.toggle('run', pdS === 1 || pdS === 2);
+}
+function pdStop(){ if(pdTimer){ clearTimeout(pdTimer); pdTimer = null; } $('pdPlay').textContent = '▶ Abspielen'; }
+function pdTick(){
+  if(pdS < 3){ pdS++; applyA(); pdTimer = setTimeout(pdTick, 2600*speed()); }
+  else pdStop();
+}
+$('pdNext').onclick = () => { pdStop(); if(pdS<3){ pdS++; applyA(); } };
+$('pdPrev').onclick = () => { pdStop(); if(pdS>0){ pdS--; applyA(); } };
+$('pdReset').onclick = () => { pdStop(); pdS = 0; applyA(); };
+$('pdPlay').onclick = () => {
+  if(pdTimer){ pdStop(); return; }
+  if(pdS === 3) pdS = 0;
+  applyA(); $('pdPlay').textContent = '⏸ Pause';
+  pdTimer = setTimeout(pdTick, 1800*speed());
+};
+/* Anfangszustand ohne Übergang setzen */
+document.querySelectorAll('#pdSvg .el').forEach(e => e.style.transition = 'none');
+applyA();
+requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('#pdSvg .el').forEach(e => e.style.transition = '')));
+
+/* ================= Station B: Zyklus ================= */
+const comps = [
+  {n:'Oxalacetat', c:4}, {n:'Citrat', c:6}, {n:'Isocitrat', c:6}, {n:'α-Ketoglutarat', c:5},
+  {n:'Succinyl-CoA', c:4}, {n:'Succinat', c:4}, {n:'Fumarat', c:4}, {n:'Malat', c:4}
+];
+const mnames = ['Oxal-|acetat','Citrat','Isocitrat','α-Keto-|glutarat','Succinyl-|CoA','Succinat','Fumarat','Malat'];
+const shorts = ['+ Acetyl C₂','Umbau','🚕 💨','🚕 💨','🔋','🛺','💧','🚕'];
+const sub = n => String.fromCharCode(0x2080 + n);
+const steps = [
+  {dir:'in',  lines:['Acetyl-CoA (C₂)'], acetyl:1, kinds:['ac'], cb:'C₄ + C₂ → C₆', enz:'Citrat-Synthase',
+   t:'Acetyl dockt an', d:'Der Acetylrest (C₂) wird von Coenzym A auf Oxalacetat (C₄) übertragen. Es entsteht Citrat (C₆, Citronensäure), CoA wird frei.'},
+  {dir:null,  lines:['Umbau'], kinds:[], cb:'C₆ → C₆', enz:'Aconitase',
+   t:'Isomerisierung', d:'Citrat wird über cis-Aconitat zu Isocitrat umgebaut. Das Kohlenstoffgerüst bleibt C₆. Es werden weder Elektronen übertragen noch CO₂ abgegeben.'},
+  {dir:'out', lines:['NAD⁺ → NADH + H⁺ 🚕','CO₂ 💨'], co2:1, nadh:1, kinds:['co2','nadh'], cb:'C₆ → C₅ + CO₂', enz:'Isocitrat-Dehydrogenase',
+   t:'Erste oxidative Decarboxylierung', d:'Ein Kohlenstoffatom verlässt das Molekül als 💨 CO₂ (<b>C₆ → C₅</b>). Gleichzeitig nimmt NAD⁺ Wasserstoff / Elektronen auf: 🚕 NADH + H⁺.'},
+  {dir:'out', lines:['NAD⁺ → NADH + H⁺ 🚕','CO₂ 💨'], co2:1, nadh:1, kinds:['co2','nadh'], cb:'C₅ → C₄ + CO₂', enz:'α-Ketoglutarat-Dehydrogenase-Komplex (arbeitet nach dem Prinzip des Pyruvat-Dehydrogenase-Komplexes)',
+   t:'Zweite oxidative Decarboxylierung', d:'Wieder wird ein C-Atom als 💨 CO₂ abgespalten (<b>C₅ → C₄</b>) und ein 🚕 NADH + H⁺ gebildet. Das C₄-Stück wird an Coenzym A gebunden (Succinyl-CoA).'},
+  {dir:'out', lines:['ADP + Pᵢ → ATP','🪫 ➜ 🔋'], atp:1, kinds:['atp'], cb:'C₄ → C₄', enz:'Succinyl-CoA-Synthetase',
+   t:'Substratkettenphosphorylierung', d:'Die Energie der CoA-Bindung phosphoryliert ADP direkt zu <b>ATP 🔋</b> (bzw. GTP, siehe Vertiefung). Das Kohlenstoffgerüst bleibt C₄.'},
+  {dir:'out', lines:['FAD → FADH₂ 🛺'], fadh:1, kinds:['fadh'], cb:'C₄ → C₄', enz:'Succinat-Dehydrogenase (in die innere Mitochondrienmembran eingelagert)',
+   t:'Oxidation mit FAD', d:'Succinat wird zu Fumarat oxidiert. Diesmal nimmt FAD die Elektronen auf: <b>FAD → FADH₂ 🛺</b>.'},
+  {dir:'in',  lines:['+ H₂O 💧'], kinds:['h2o'], cb:'C₄ → C₄', enz:'Fumarase',
+   t:'Hydratisierung', d:'Es wird Wasser angelagert (Fumarat → Malat). Keine Redoxreaktion, das Kohlenstoffgerüst bleibt C₄.'},
+  {dir:'out', lines:['NAD⁺ → NADH + H⁺ 🚕'], nadh:1, kinds:['nadh'], cb:'C₄ → C₄', enz:'Malat-Dehydrogenase',
+   t:'Letzte Oxidation', d:'Malat wird oxidiert: das dritte 🚕 NADH + H⁺. Es entsteht wieder <b>Oxalacetat (C₄)</b>, der Zyklus ist geschlossen und kann von vorn beginnen.'}
+];
+let s = 0, cTimer = null;
+let CX=510,CY=420,RX=270,RY=270,HW=58,HH=27,GAP=10,MOB=false;
+const angN = i => (-135 + i*45) * Math.PI/180;
+const angS = i => (-112.5 + i*45) * Math.PI/180;
+const pt = (a, e=0) => ({x: CX + (RX+e)*Math.cos(a), y: CY + (RY+e)*Math.sin(a)});
+function tang(a){ const dx=-RX*Math.sin(a), dy=RY*Math.cos(a), sp=Math.hypot(dx,dy); return {tx:dx/sp, ty:dy/sp, sp}; }
+const off = a => { const t=tang(a); return (HW*Math.abs(t.tx) + HH*Math.abs(t.ty) + GAP) / t.sp; };
+const mq = window.matchMedia('(max-width:720px)');
+
+function spriteSvg(kind){
+  switch(kind){
+    case 'co2':  return `<circle r="7" fill="#2d3142"/><circle cx="-12" r="5" fill="#d6453d"/><circle cx="12" r="5" fill="#d6453d"/>`;
+    case 'ac':   return `<circle cx="-7" r="6" fill="#2d3142"/><circle cx="7" r="6" fill="#2d3142"/>`;
+    case 'nadh': return `<text font-size="22" text-anchor="middle" dominant-baseline="central">🚕</text><circle cx="11" cy="-10" r="6" fill="#2f7de1"/><text x="11" y="-7" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">H</text>`;
+    case 'fadh': return `<text font-size="22" text-anchor="middle" dominant-baseline="central">🛺</text><circle cx="11" cy="-10" r="6" fill="#2f7de1"/><text x="11" y="-7" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">H</text>`;
+    case 'atp':  return `<text font-size="22" text-anchor="middle" dominant-baseline="central">🔋</text>`;
+    case 'h2o':  return `<text font-size="20" text-anchor="middle" dominant-baseline="central">💧</text>`;
+  }
+  return '';
+}
+function sprites(){
+  if(RM || s < 1 || s > 8) return '';
+  const i = s-1, st = steps[i], am = angS(i), inward = st.dir === 'in';
+  const e0 = inward ? (MOB?34:56) : 2, e1 = inward ? 2 : (MOB?34:56);
+  const cs = Math.cos(am), sn = Math.sin(am);
+  const tx = -Math.sin(am), ty = Math.cos(am);
+  const n = st.kinds.length, gap = MOB ? 13 : 18;
+  let out = '';
+  st.kinds.forEach((k, j) => {
+    const sh = (j - (n-1)/2) * gap * 2;
+    const p0 = pt(am, e0), p1 = pt(am, e1);
+    out += `<g class="sp ${inward?'in':''}" style="--x0:${(p0.x+tx*sh).toFixed(1)}px;--y0:${(p0.y+ty*sh).toFixed(1)}px;--x1:${(p1.x+tx*sh).toFixed(1)}px;--y1:${(p1.y+ty*sh).toFixed(1)}px;animation-duration:${(2*speed()).toFixed(2)}s">${spriteSvg(k)}</g>`;
+  });
+  return out;
+}
+
+function drawRing(){
+  MOB = mq.matches;
+  if(MOB){ CX=200; CY=305; RX=128; RY=215; HW=33; HH=27; GAP=6; }
+  else   { CX=510; CY=420; RX=270; RY=270; HW=58; HH=27; GAP=10; }
+  $('ring').setAttribute('viewBox', MOB ? '0 0 400 560' : '0 0 1020 800');
+  const showAll = $('cAll').checked;
+  const mk = MOB ? 12 : 16;
+  let h = `<defs>
+    <marker id="arrP" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${mk}" markerHeight="${mk}" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7b4bd6"/></marker>
+    <marker id="arrG" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${mk}" markerHeight="${mk}" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b9b2a3"/></marker>
+  </defs>`;
+  if(MOB){
+    h += `<text x="10" y="16" font-size="13" font-weight="700" fill="#1f2430">Pyruvat (C₃)</text>
+          <text x="10" y="30" font-size="10.5" fill="#5d6475">↓ oxid. Decarboxylierung</text>
+          <text x="10" y="43" font-size="10.5" fill="#5d6475">(−CO₂ 💨, NADH + H⁺ 🚕)</text>`;
+  } else {
+    h += `<text x="20" y="34" font-size="19" font-weight="700" fill="#1f2430">Pyruvat (C₃)</text>
+          <text x="20" y="58" font-size="15" fill="#5d6475">↓ oxidative Decarboxylierung</text>
+          <text x="20" y="78" font-size="15" fill="#5d6475">(− CO₂ 💨, NAD⁺ → NADH + H⁺ 🚕)</text>`;
+  }
+  for(let i=0;i<8;i++){
+    const j = (i+1)%8;
+    const a1 = angN(i)+off(angN(i)), a2 = angN(j)-off(angN(j));
+    const p1 = pt(a1), p2 = pt(a2);
+    const done = s > i, cur = s === i+1;
+    const sw = MOB ? (cur?6:3.5) : (cur?8:5);
+    h += `<path d="M${p1.x.toFixed(1)} ${p1.y.toFixed(1)} A ${RX} ${RY} 0 0 1 ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}" fill="none" stroke="${done?'#7b4bd6':'#c9c2b3'}" stroke-width="${sw}" marker-end="url(#${done?'arrP':'arrG'})"/>`;
+  }
+  steps.forEach((st,i) => {
+    const am = angS(i), done = s > i, cur = s === i+1;
+    const op = (done || cur || showAll) ? 1 : 0.28;
+    const col = cur ? '#7b4bd6' : '#1f2430', weight = cur ? 700 : 500;
+    const e1 = MOB ? 8 : 10, e2 = MOB ? 30 : 52, et = MOB ? 38 : 68;
+    if(st.dir){
+      const a = pt(am, e1), b = pt(am, e2), lw = MOB ? 2.5 : 3.5;
+      const f = st.dir === 'out' ? [a,b] : [b,a];
+      h += `<line x1="${f[0].x.toFixed(1)}" y1="${f[0].y.toFixed(1)}" x2="${f[1].x.toFixed(1)}" y2="${f[1].y.toFixed(1)}" stroke="#7b4bd6" stroke-width="${lw}" marker-end="url(#arrP)" opacity="${op}"/>`;
+    }
+    const tp = pt(am, et), cs = Math.cos(am), sn = Math.sin(am);
+    const anchor = cs > 0.35 ? 'start' : cs < -0.35 ? 'end' : 'middle';
+    const lines = MOB ? [shorts[i]] : st.lines;
+    const n = lines.length, fs = MOB ? 14 : 17, lh = MOB ? 18 : 22;
+    const yb = tp.y + (sn < -0.7 ? -(n-1)*lh - 4 : sn > 0.7 ? 14 : -(n-1)*lh/2 + 5);
+    lines.forEach((l,k) => { h += `<text x="${tp.x.toFixed(1)}" y="${(yb + k*lh).toFixed(1)}" text-anchor="${anchor}" font-size="${fs}" font-weight="${weight}" fill="${col}" opacity="${op}">${l}</text>`; });
+    const nb = pt(am, MOB ? -24 : -46), rr = MOB ? 10 : 14, nf = MOB ? 12 : 15;
+    h += `<circle cx="${nb.x.toFixed(1)}" cy="${nb.y.toFixed(1)}" r="${rr}" fill="${done||cur?'#7b4bd6':'#e6dfd2'}"/><text x="${nb.x.toFixed(1)}" y="${(nb.y+nf/3).toFixed(1)}" text-anchor="middle" font-size="${nf}" font-weight="700" fill="${done||cur?'#fff':'#5d6475'}">${i+1}</text>`;
+  });
+  const active = s % 8;
+  comps.forEach((c,i) => {
+    const p = pt(angN(i)), on = i === active;
+    h += `<rect x="${(p.x-HW).toFixed(1)}" y="${(p.y-HH).toFixed(1)}" width="${2*HW}" height="${2*HH}" rx="${MOB?10:14}" fill="${on?'#f4eeff':'#ffffff'}" stroke="${on?'#7b4bd6':'#9aa0ae'}" stroke-width="${on?(MOB?3:4):(MOB?2:2.5)}"/>`;
+    const dc = (cx,cy,r,k) => `<circle class="${on&&s>0?'pop':''}" style="animation-delay:${(k*0.06).toFixed(2)}s" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="#2d3142"/>`;
+    if(!MOB){
+      h += `<text x="${p.x.toFixed(1)}" y="${(p.y-5).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2430">${c.n}</text>`;
+      h += `<text x="${(p.x-HW+10).toFixed(1)}" y="${(p.y+16).toFixed(1)}" font-size="13" font-weight="700" fill="#5d6475">C${sub(c.c)}</text>`;
+      const x0 = p.x + 10 - (c.c-1)*11/2;
+      for(let k=0;k<c.c;k++) h += dc(x0+k*11, p.y+12, 4.2, k);
+    } else {
+      const L = mnames[i].split('|'), fy = L.length === 2 ? [p.y-14, p.y-3] : [p.y-5];
+      L.forEach((t,k) => { h += `<text x="${p.x.toFixed(1)}" y="${fy[k].toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2430">${t}</text>`; });
+      h += `<text x="${(p.x-HW+4).toFixed(1)}" y="${(p.y+21).toFixed(1)}" font-size="10" font-weight="700" fill="#5d6475">C${sub(c.c)}</text>`;
+      const x0 = p.x + 9 - (c.c-1)*4;
+      for(let k=0;k<c.c;k++) h += dc(x0+k*8, p.y+18, 3, k);
+    }
+  });
+  const stepTxt = s===0 ? 'Start' : s>=8 ? 'Runde fertig' : 'Schritt '+s+' von 8';
+  if(MOB){
+    h += `<text x="${CX}" y="${CY-14}" text-anchor="middle" font-size="18" font-weight="800" fill="#1f2430">Citratzyklus</text>
+          <text x="${CX}" y="${CY+6}" text-anchor="middle" font-size="14" fill="#7b4bd6" font-weight="700">${stepTxt}</text>
+          <text x="${CX}" y="${CY+24}" text-anchor="middle" font-size="12.5" fill="#5d6475">C-Atome im Zyklus: ${comps[active].c}</text>`;
+  } else {
+    h += `<text x="${CX}" y="${CY-26}" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2430">Citratzyklus</text>
+          <text x="${CX}" y="${CY+8}" text-anchor="middle" font-size="18" fill="#7b4bd6" font-weight="700">${stepTxt}</text>
+          <text x="${CX}" y="${CY+34}" text-anchor="middle" font-size="16" fill="#5d6475">C-Atome im Zyklus: ${comps[active].c}</text>`;
+  }
+  h += sprites();
+  $('ring').innerHTML = h;
+}
+
+function sums(upto){
+  const t = {co2:0,nadh:0,fadh:0,atp:0};
+  for(let i=0;i<upto;i++){ for(const k in t) t[k] += steps[i][k] || 0; }
+  return t;
+}
+function drawInfo(){
+  const info = $('cInfo');
+  if(s === 0){
+    info.innerHTML = '<b>Start:</b> Oxalacetat (C₄) liegt bereit. Acetyl-CoA (C₂) kommt aus der oxidativen Decarboxylierung. Tippe auf „Nächster Schritt“ oder „Abspielen“.';
+  } else {
+    const st = steps[s-1], chips = [];
+    chips.push(`<span class="chip cb">${st.cb}</span>`);
+    if(st.acetyl) chips.push('<span class="chip in">+ Acetyl (C₂)</span>');
+    if(st.co2) chips.push('<span class="chip co2">− CO₂ 💨</span>');
+    if(st.nadh) chips.push('<span class="chip nadh">NAD⁺ → NADH + H⁺ 🚕</span>');
+    if(st.fadh) chips.push('<span class="chip fadh">FAD → FADH₂ 🛺</span>');
+    if(st.atp) chips.push('<span class="chip atp">ADP → ATP 🔋</span>');
+    info.innerHTML = `<b>Schritt ${s}: ${st.t}</b><br>${comps[(s-1)%8].n} → ${comps[s%8].n}<div style="margin:6px 0">${chips.join('')}</div>${st.d}<div class="enz">Enzym (nur zum Wiedererkennen): ${st.enz}</div>`;
+  }
+  const m = $('cTimes2').checked ? 2 : 1, t = sums(s);
+  $('cScore').innerHTML = `<div>💨 CO₂<b>${t.co2*m}</b></div><div>🚕 NADH + H⁺<b>${t.nadh*m}</b></div><div>🛺 FADH₂<b>${t.fadh*m}</b></div><div>🔋 ATP<b>${t.atp*m}</b></div>`;
+  $('cBack').disabled = s === 0;
+  $('cNext').disabled = s === 8;
+  $('cNext').textContent = s === 8 ? '✔ Runde geschafft' : 'Nächster Schritt ▶';
+  const active = s % 8;
+  $('cStrip').innerHTML = comps.map((c,i) => `<div class="${i===active?'on':''}"><b>${c.n}</b>C${sub(c.c)}<br>${'<span class="d"></span>'.repeat(c.c)}</div>`).join('');
+}
+function drawCycle(){ drawRing(); drawInfo(); }
+function cStop(){ if(cTimer){ clearTimeout(cTimer); cTimer = null; } $('cPlay').textContent = '▶ Abspielen'; }
+function cTick(){
+  if(s < 8){ s++; drawCycle(); cTimer = setTimeout(cTick, 3000*speed()); }
+  else cStop();
+}
+$('cNext').onclick = () => { cStop(); if(s<8){ s++; drawCycle(); } };
+$('cBack').onclick = () => { cStop(); if(s>0){ s--; drawCycle(); } };
+$('cReset').onclick = () => { cStop(); s = 0; drawCycle(); };
+$('cPlay').onclick = () => {
+  if(cTimer){ cStop(); return; }
+  if(s >= 8) s = 0;
+  drawCycle(); $('cPlay').textContent = '⏸ Pause';
+  cTimer = setTimeout(cTick, 800*speed());
+  if(s === 0){ s = 1; drawCycle(); clearTimeout(cTimer); cTimer = setTimeout(cTick, 3000*speed()); }
+};
+$('cTimes2').onchange = drawInfo;
+$('cAll').onchange = drawRing;
+if(mq.addEventListener) mq.addEventListener('change', drawCycle);
+drawCycle();
+
+/* ================= Gesamtbilanz ================= */
+const stages = [
+  {name:'Glucose', rel:[], caps:[[6,'Glucose (C₆)']],
+   msg:'<b>6 C-Atome</b> in einem Molekül. Noch ist nichts abgebaut.', t:[0,0,0,0]},
+  {name:'Nach Glykolyse', rel:[], caps:[[3,'Pyruvat (C₃)'],[3,'Pyruvat (C₃)']],
+   msg:'Die Glucose wurde zu <b>2 Pyruvat (je C₃)</b> gespalten. Es ist noch kein C-Atom verloren. Gewinn: 2 NADH + H⁺ und netto 2 ATP.', t:[0,2,0,2]},
+  {name:'Nach oxidativer Decarboxylierung', rel:[2,5], caps:[[2,'Acetyl-CoA (C₂)'],[1,'CO₂'],[2,'Acetyl-CoA (C₂)'],[1,'CO₂']],
+   msg:'Aus jedem Pyruvat entweicht <b>1 C-Atom als CO₂</b>. Es verbleiben 4 C-Atome in 2 Acetyl-CoA. Dazu 2 weitere NADH + H⁺.', t:[2,4,0,2]},
+  {name:'Nach Citratzyklus', rel:[0,1,2,3,4,5], caps:[[6,'6 × CO₂ aus 1 Glucose']],
+   msg:'Im Zyklus (2 Runden) entweichen die restlichen <b>4 C-Atome als CO₂</b>. Die Glucose ist vollständig zu CO₂ oxidiert. Die Energie steckt in den Reduktionsäquivalenten 🚕 🛺 und zum Teil schon in ATP 🔋.', t:[6,10,2,4]}
+];
+let sel = 0, stTimer = null;
+$('atoms').innerHTML = [0,1,2,3,4,5].map(i => `<span class="atom" id="at${i}"><i class="l">O</i>C<i class="r">O</i></span>`).join('');
+function drawStages(){
+  const st = stages[sel];
+  $('stTabs').innerHTML = stages.map((x,i) => `<button class="${i===sel?'':'ghost'}" data-i="${i}">${x.name}</button>`).join('');
+  $('stTabs').querySelectorAll('button').forEach(b => b.onclick = () => { stStop(); sel = +b.dataset.i; drawStages(); });
+  for(let i=0;i<6;i++) $('at'+i).classList.toggle('rel', st.rel.includes(i));
+  $('atomCaps').innerHTML = st.caps.map(c => `<div class="${c[1].includes('CO₂')?'rel':''}" style="grid-column:span ${c[0]}">${c[1]}</div>`).join('');
+  $('stMsg').innerHTML = st.msg;
+  const t = st.t;
+  $('stTable').innerHTML = `<tr><td>${st.name}</td><td>${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td><td>${t[3]}</td></tr>`;
+}
+function stStop(){ if(stTimer){ clearTimeout(stTimer); stTimer = null; } $('stPlay').textContent = '▶ Abbau abspielen'; }
+function stTick(){
+  if(sel < 3){ sel++; drawStages(); stTimer = setTimeout(stTick, 2600*speed()); }
+  else stStop();
+}
+$('stPlay').onclick = () => {
+  if(stTimer){ stStop(); return; }
+  sel = 0; drawStages(); $('stPlay').textContent = '⏸ Pause';
+  stTimer = setTimeout(stTick, 1800*speed());
+};
+drawStages();
+
+/* ================= Selbsttest ================= */
+const QZ = [
+  {t:'mc', ref:'Abschnitt 1–3', q:'Wo laufen oxidative Decarboxylierung und Citratzyklus ab?',
+   o:['Zellplasma','Matrix der Mitochondrien','Intermembranraum','Thylakoidmembran'], a:1,
+   ex:'Beides läuft in der Matrix ab. Nur die Succinat-Dehydrogenase sitzt in der inneren Membran.'},
+  {t:'mc', ref:'Abschnitt 2', q:'Was bedeutet „oxidative Decarboxylierung“ beim Pyruvat?',
+   o:['Anlagerung von CO₂ und Aufnahme von Elektronen','Abspaltung von CO₂ und Abgabe von Wasserstoff / Elektronen an NAD⁺','Spaltung von Wasser unter Abgabe von O₂','Verlängerung des C-Gerüsts um zwei C-Atome'], a:1,
+   ex:'Decarboxylierung = CO₂-Abspaltung (C₃ → C₂). Oxidativ = Elektronen / Wasserstoff werden abgegeben und von NAD⁺ aufgenommen.'},
+  {t:'num', ref:'Abschnitt 3', q:'Wie viele CO₂ gibt <u>ein</u> Durchlauf des Citratzyklus (1 Acetyl-CoA) ab?', a:2,
+   ex:'2 CO₂ (Schritt 3 und 4). Das entspricht den 2 C-Atomen des aufgenommenen Acetylrests.'},
+  {t:'num', ref:'Abschnitt 2 und 3', q:'Wie viele NADH + H⁺ entstehen pro Glucose in oxidativer Decarboxylierung und Citratzyklus zusammen (ohne Glykolyse)?', a:8,
+   ex:'2 (Decarboxylierung, 2 Pyruvat) + 6 (Zyklus: 3 pro Runde × 2 Runden) = 8.'},
+  {t:'num', ref:'Gesamtbilanz', q:'Wie viele CO₂ entstehen insgesamt, wenn 1 Glucose bis zum Ende des Citratzyklus abgebaut wird?', a:6,
+   ex:'2 CO₂ aus der oxidativen Decarboxylierung + 4 CO₂ aus dem Zyklus = 6 CO₂. Das entspricht den 6 C-Atomen der Glucose.'},
+  {t:'mc', ref:'Abschnitt 3, Schritt 6', q:'In welchem Schritt wird FAD zu FADH₂ reduziert?',
+   o:['Isocitrat → α-Ketoglutarat','Fumarat → Malat','Malat → Oxalacetat','Succinat → Fumarat'], a:3,
+   ex:'Die Succinat-Dehydrogenase oxidiert Succinat zu Fumarat und überträgt die Elektronen auf FAD. Sie ist zugleich Komplex II der Atmungskette.'},
+  {t:'mc', ref:'Abschnitt 3, Schritt 5', q:'Wo entsteht im Citratzyklus direkt ATP (bzw. GTP)?',
+   o:['Oxalacetat → Citrat','Citrat → Isocitrat','Succinyl-CoA → Succinat','Fumarat → Malat'], a:2,
+   ex:'Succinyl-CoA → Succinat: Die Energie der CoA-Bindung wird für die Substratkettenphosphorylierung genutzt.'},
+  {t:'mc', ref:'Gesamtbilanz', q:'Woher stammt das CO₂, das du ausatmest?',
+   o:['Aus dem eingeatmeten Sauerstoff','Aus dem Wasser in der Zelle','Aus den Kohlenstoffatomen der Nährstoffe, z. B. der Glucose','Aus der Reaktion von O₂ in der Atmungskette'], a:2,
+   ex:'Das CO₂ entsteht beim Abbau des Kohlenstoffgerüsts. Der Sauerstoff wird erst am Ende der Atmungskette zu Wasser umgesetzt.'},
+  {t:'mc', ref:'Gesamtbilanz', q:'Der Citratzyklus verbraucht selbst keinen O₂. Warum kommt er ohne O₂ trotzdem zum Erliegen?',
+   o:['Ohne O₂ fehlt das Substrat der Citrat-Synthase','NADH + H⁺ und FADH₂ werden in der Atmungskette nicht mehr reoxidiert, NAD⁺ und FAD fehlen','Ohne O₂ kann das CO₂ nicht abgegeben werden','Ohne O₂ wird kein Coenzym A gebildet'], a:1,
+   ex:'Die Atmungskette regeneriert NAD⁺ und FAD. Fehlen sie, können die Dehydrogenasen des Zyklus keine Elektronen mehr aufnehmen.'},
+  {t:'mc', ref:'Abschnitt 3', q:'Warum ist es wichtig, dass jeder Schritt des Zyklus von einem eigenen Enzym katalysiert wird?',
+   o:['Enzyme liefern die Energie für die Reaktion','Enzyme senken die Aktivierungsenergie und ermöglichen die Regulation einzelner Schritte','Enzyme werden bei jeder Reaktion verbraucht','Ohne Enzyme würde der Zyklus schneller laufen'], a:1,
+   ex:'Enzyme sind Biokatalysatoren: Sie senken die Aktivierungsenergie, sind substratspezifisch und regulierbar. Energie liefern sie nicht.'}
+];
+const qs = QZ.map(() => ({tries:0, done:false, pts:0}));
+function qRender(){
+  $('quiz').innerHTML = QZ.map((x,i) => `<div class="q" id="q${i}"><p>${i+1}. ${x.q} <span class="k">(${x.ref})</span></p>` +
+    (x.t === 'mc'
+      ? x.o.map((o,j) => `<button class="opt" data-q="${i}" data-j="${j}">${o}</button>`).join('')
+      : `<input type="number" inputmode="numeric" id="in${i}" aria-label="Antwort Frage ${i+1}"> <button data-chk="${i}">Prüfen</button>`) +
+    `<div class="fb" id="fb${i}" aria-live="polite"></div></div>`).join('');
+  $('qMax').textContent = QZ.length*2; $('qN').textContent = QZ.length;
+  $('quizScore').style.display = 'none';
+  qs.forEach(o => { o.tries = 0; o.done = false; o.pts = 0; });
+  qUpdate();
+}
+function qUpdate(){
+  const pts = qs.reduce((a,b) => a + b.pts, 0), done = qs.filter(x => x.done).length;
+  $('qPts').textContent = pts; $('qDone').textContent = done;
+  $('qMeter').style.width = (pts / (QZ.length*2) * 100) + '%';
+  if(done === QZ.length){
+    const r = pts / (QZ.length*2), sc = $('quizScore'); sc.style.display = 'block';
+    const wrong = QZ.map((x,i) => qs[i].pts < 2 ? `Frage ${i+1} (${x.ref})` : null).filter(Boolean);
+    sc.innerHTML = `<b>${pts} von ${QZ.length*2} Punkten.</b> ` +
+      (r === 1 ? 'Alles im ersten Versuch richtig. Du beherrschst den Stoff sicher.' :
+       r >= 0.8 ? 'Sehr gut. Schau dir noch kurz die Themen an, bei denen Punkte fehlen.' :
+       r >= 0.55 ? 'Solide Grundlage, aber mit Lücken. Spiele die betreffenden Stationen noch einmal durch.' :
+       'Noch unsicher. Gehe die Animationen in Ruhe noch einmal durch und versuche den Test dann erneut.') +
+      (wrong.length ? `<br>Wiederholen: ${wrong.join('; ')}.` : '');
+  }
+}
+function qFinish(i, correct){
+  const o = qs[i]; o.done = true;
+  o.pts = correct ? (o.tries === 1 ? 2 : 1) : 0;
+  const x = QZ[i];
+  $('fb'+i).innerHTML = (correct ? `✅ Richtig (+${o.pts} ${o.pts===1?'Punkt':'Punkte'}). ` : `❌ Leider nicht. Richtig wäre: <b>${x.t==='mc'?x.o[x.a]:x.a}</b>. `) + x.ex;
+  $('q'+i).querySelectorAll('button').forEach(b => b.disabled = true);
+  const inp = $('in'+i); if(inp) inp.disabled = true;
+  qUpdate();
+}
+function qAnswer(i, val, btn){
+  const o = qs[i]; if(o.done) return;
+  o.tries++;
+  const x = QZ[i], ok = x.t === 'mc' ? val === x.a : Number(val) === x.a;
+  if(ok){ if(btn) btn.classList.add('right'); qFinish(i, true); }
+  else if(o.tries >= 2){ if(btn) btn.classList.add('wrong'); if(x.t==='mc') $('q'+i).querySelectorAll('.opt')[x.a].classList.add('right'); qFinish(i, false); }
+  else {
+    if(btn){ btn.classList.add('wrong'); btn.disabled = true; }
+    $('fb'+i).textContent = 'Nicht ganz. Versuche es noch einmal (1 Punkt möglich).';
+  }
+}
+$('quiz').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.j !== undefined) qAnswer(+b.dataset.q, +b.dataset.j, b);
+  else if(b.dataset.chk !== undefined){
+    const i = +b.dataset.chk, v = $('in'+i).value;
+    if(v === '') { $('fb'+i).textContent = 'Bitte eine Zahl eingeben.'; return; }
+    qAnswer(i, v, null);
+  }
+});
+$('qReset').onclick = qRender;
+qRender();
+</script>
+</body>
+</html>
