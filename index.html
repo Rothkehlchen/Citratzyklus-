@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Oxidative Decarboxylierung und Citratzyklus</title>
+<title>Pyruvatoxidation und Citratzyklus</title>
 <style>
 :root{
   --bg:#fbf7f0; --card:#ffffff; --ink:#1f2430; --muted:#5d6475; --line:#e6dfd2;
@@ -129,7 +129,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
 <main>
 
 <header>
-  <h1>Oxidative Decarboxylierung und Citratzyklus</h1>
+  <h1>Pyruvatoxidation und Citratzyklus</h1>
   <p>Interaktive Animation: Der Weg der Kohlenstoffatome und der Reduktionsäquivalente. Das CO₂, das du ausatmest, stammt aus dem Abbau von Nährstoffen. Hier siehst du Schritt für Schritt, wo es entsteht und wo dabei Energie gewonnen wird.</p>
 </header>
 
@@ -144,7 +144,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
     <div><big>🛺</big><b>FAD / FADH₂</b><br>Das kleinere Taxi mit gleicher Aufgabe.</div>
     <div><big>🪫 ➜ 🔋</big><b>ADP ➜ ATP</b><br>ADP = leere, ATP = volle Batterie.</div>
   </div>
-  <div class="tip"><b>Ort:</b> Die Glykolyse läuft im Zellplasma. Das Pyruvat wird in die <b>Matrix der Mitochondrien</b> transportiert. Dort laufen die oxidative Decarboxylierung und der Citratzyklus ab.</div>
+  <div class="tip"><b>Ort:</b> Die Glykolyse läuft im Zellplasma. Das Pyruvat wird in die <b>Matrix der Mitochondrien</b> transportiert. Dort laufen die Pyruvatoxidation und der Citratzyklus ab.</div>
 </section>
 
 <!-- 1 -->
@@ -153,7 +153,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
   <div class="flow">
     <div class="st">Glykolyse<br><small>Zellplasma</small><br>Glucose (C₆) → 2 Pyruvat (je C₃)</div>
     <div class="ar">➜</div>
-    <div class="st hot">Oxidative Decarboxylierung<br><small>Mitochondrien-Matrix</small><br>Pyruvat (C₃) → Acetyl-CoA (C₂)</div>
+    <div class="st hot">Pyruvatoxidation<br><small>Mitochondrien-Matrix</small><br>Pyruvat (C₃) → Acetyl-CoA (C₂)</div>
     <div class="ar">➜</div>
     <div class="st hot">Citratzyklus<br><small>Mitochondrien-Matrix</small><br>Acetyl-CoA (C₂) → 2 CO₂</div>
     <div class="ar">➜</div>
@@ -163,7 +163,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
 
 <!-- 2 -->
 <section>
-  <h2><span class="n">2</span>Oxidative Decarboxylierung</h2>
+  <h2><span class="n">2</span>Pyruvatoxidation</h2>
   <p class="lead">Spiele die Animation ab oder schalte mit „Schritt“ weiter. Beachte, was mit den Kohlenstoffatomen passiert.</p>
   <div class="pdwrap">
     <svg id="pdSvg" viewBox="0 0 420 392" role="img" aria-label="Animation: Pyruvat wird im Pyruvat-Dehydrogenase-Komplex zu Acetyl-CoA, CO2 und NADH">
@@ -205,7 +205,8 @@ footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
   </div>
   <details open>
     <summary>Begriffe</summary>
-    <p><b>Decarboxylierung:</b> Eine Carboxylgruppe wird als CO₂ abgespalten. Das Kohlenstoffgerüst verkürzt sich um ein C-Atom (C₃ → C₂).<br>
+    <p><b>Pyruvatoxidation</b> (auch „oxidative Decarboxylierung“ genannt): Pyruvat wird zu Acetyl-CoA umgesetzt. Dabei geschehen zwei Dinge:<br>
+    <b>Decarboxylierung:</b> Eine Carboxylgruppe wird als CO₂ abgespalten. Das Kohlenstoffgerüst verkürzt sich um ein C-Atom (C₃ → C₂).<br>
     <b>Oxidativ:</b> Elektronen bzw. Wasserstoff werden abgegeben. Das Coenzym NAD⁺ nimmt sie auf und wird zu NADH + H⁺ reduziert. Das Enzym ist daher eine <i>Dehydrogenase</i>.</p>
     <p><b>Bilanz pro Glucose</b> (2 Pyruvat, der Schritt läuft 2×): 2 CO₂, 2 NADH + H⁺, 2 Acetyl-CoA.</p>
   </details>
@@ -280,7 +281,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
     <p>In der inneren Mitochondrienmembran. Sie ist zugleich Komplex II der Atmungskette. Alle anderen Enzyme des Zyklus liegen gelöst in der Matrix.</p></details>
 </section>
 
-<footer>Oxidative Decarboxylierung und Citratzyklus · Biologie Sek II (eA)</footer>
+<footer>Pyruvatoxidation und Citratzyklus · Biologie Sek II (eA)</footer>
 </main>
 
 <script>
@@ -361,9 +362,9 @@ const steps = [
   {dir:null,  lines:['Umbau'], kinds:[], cb:'C₆ → C₆', enz:'Aconitase',
    t:'Isomerisierung', d:'Citrat wird über cis-Aconitat zu Isocitrat umgebaut. Das Kohlenstoffgerüst bleibt C₆. Es werden weder Elektronen übertragen noch CO₂ abgegeben.'},
   {dir:'out', lines:['NAD⁺ → NADH + H⁺ 🚕','CO₂ 💨'], co2:1, nadh:1, kinds:['co2','nadh'], cb:'C₆ → C₅ + CO₂', enz:'Isocitrat-Dehydrogenase',
-   t:'Erste oxidative Decarboxylierung', d:'Ein Kohlenstoffatom verlässt das Molekül als 💨 CO₂ (<b>C₆ → C₅</b>). Gleichzeitig nimmt NAD⁺ Wasserstoff / Elektronen auf: 🚕 NADH + H⁺.'},
+   t:'Erste Decarboxylierung (mit Oxidation)', d:'Ein Kohlenstoffatom verlässt das Molekül als 💨 CO₂ (<b>C₆ → C₅</b>). Gleichzeitig nimmt NAD⁺ Wasserstoff / Elektronen auf: 🚕 NADH + H⁺.'},
   {dir:'out', lines:['NAD⁺ → NADH + H⁺ 🚕','CO₂ 💨'], co2:1, nadh:1, kinds:['co2','nadh'], cb:'C₅ → C₄ + CO₂', enz:'α-Ketoglutarat-Dehydrogenase-Komplex (arbeitet nach dem Prinzip des Pyruvat-Dehydrogenase-Komplexes)',
-   t:'Zweite oxidative Decarboxylierung', d:'Wieder wird ein C-Atom als 💨 CO₂ abgespalten (<b>C₅ → C₄</b>) und ein 🚕 NADH + H⁺ gebildet. Das C₄-Stück wird an Coenzym A gebunden (Succinyl-CoA).'},
+   t:'Zweite Decarboxylierung (mit Oxidation)', d:'Wieder wird ein C-Atom als 💨 CO₂ abgespalten (<b>C₅ → C₄</b>) und ein 🚕 NADH + H⁺ gebildet. Das C₄-Stück wird an Coenzym A gebunden (Succinyl-CoA).'},
   {dir:'out', lines:['ADP + Pᵢ → ATP','🪫 ➜ 🔋'], atp:1, kinds:['atp'], cb:'C₄ → C₄', enz:'Succinyl-CoA-Synthetase',
    t:'Substratkettenphosphorylierung', d:'Die Energie der CoA-Bindung phosphoryliert ADP direkt zu <b>ATP 🔋</b> (bzw. GTP, siehe Vertiefung). Das Kohlenstoffgerüst bleibt C₄.'},
   {dir:'out', lines:['FAD → FADH₂ 🛺'], fadh:1, kinds:['fadh'], cb:'C₄ → C₄', enz:'Succinat-Dehydrogenase (in die innere Mitochondrienmembran eingelagert)',
@@ -422,11 +423,11 @@ function drawRing(){
   </defs>`;
   if(MOB){
     h += `<text x="10" y="16" font-size="13" font-weight="700" fill="#1f2430">Pyruvat (C₃)</text>
-          <text x="10" y="30" font-size="10.5" fill="#5d6475">↓ oxid. Decarboxylierung</text>
+          <text x="10" y="30" font-size="10.5" fill="#5d6475">↓ Pyruvatoxidation</text>
           <text x="10" y="43" font-size="10.5" fill="#5d6475">(−CO₂ 💨, NADH + H⁺ 🚕)</text>`;
   } else {
     h += `<text x="20" y="34" font-size="19" font-weight="700" fill="#1f2430">Pyruvat (C₃)</text>
-          <text x="20" y="58" font-size="15" fill="#5d6475">↓ oxidative Decarboxylierung</text>
+          <text x="20" y="58" font-size="15" fill="#5d6475">↓ Pyruvatoxidation</text>
           <text x="20" y="78" font-size="15" fill="#5d6475">(− CO₂ 💨, NAD⁺ → NADH + H⁺ 🚕)</text>`;
   }
   for(let i=0;i<8;i++){
@@ -496,7 +497,7 @@ function sums(upto){
 function drawInfo(){
   const info = $('cInfo');
   if(s === 0){
-    info.innerHTML = '<b>Start:</b> Oxalacetat (C₄) liegt bereit. Acetyl-CoA (C₂) kommt aus der oxidativen Decarboxylierung. Tippe auf „Nächster Schritt“ oder „Abspielen“.';
+    info.innerHTML = '<b>Start:</b> Oxalacetat (C₄) liegt bereit. Acetyl-CoA (C₂) kommt aus der Pyruvatoxidation. Tippe auf „Nächster Schritt“ oder „Abspielen“.';
   } else {
     const st = steps[s-1], chips = [];
     chips.push(`<span class="chip cb">${st.cb}</span>`);
@@ -542,7 +543,7 @@ const stages = [
    msg:'<b>6 C-Atome</b> in einem Molekül. Noch ist nichts abgebaut.', t:[0,0,0,0]},
   {name:'Nach Glykolyse', rel:[], caps:[[3,'Pyruvat (C₃)'],[3,'Pyruvat (C₃)']],
    msg:'Die Glucose wurde zu <b>2 Pyruvat (je C₃)</b> gespalten. Es ist noch kein C-Atom verloren. Gewinn: 2 NADH + H⁺ und netto 2 ATP.', t:[0,2,0,2]},
-  {name:'Nach oxidativer Decarboxylierung', rel:[2,5], caps:[[2,'Acetyl-CoA (C₂)'],[1,'CO₂'],[2,'Acetyl-CoA (C₂)'],[1,'CO₂']],
+  {name:'Nach Pyruvatoxidation', rel:[2,5], caps:[[2,'Acetyl-CoA (C₂)'],[1,'CO₂'],[2,'Acetyl-CoA (C₂)'],[1,'CO₂']],
    msg:'Aus jedem Pyruvat entweicht <b>1 C-Atom als CO₂</b>. Es verbleiben 4 C-Atome in 2 Acetyl-CoA. Dazu 2 weitere NADH + H⁺.', t:[2,4,0,2]},
   {name:'Nach Citratzyklus', rel:[0,1,2,3,4,5], caps:[[6,'6 × CO₂ aus 1 Glucose']],
    msg:'Im Zyklus (2 Runden) entweichen die restlichen <b>4 C-Atome als CO₂</b>. Die Glucose ist vollständig zu CO₂ oxidiert. Die Energie steckt in den Reduktionsäquivalenten 🚕 🛺 und zum Teil schon in ATP 🔋.', t:[6,10,2,4]}
@@ -573,18 +574,18 @@ drawStages();
 
 /* ================= Selbsttest ================= */
 const QZ = [
-  {t:'mc', ref:'Abschnitt 1–3', q:'Wo laufen oxidative Decarboxylierung und Citratzyklus ab?',
+  {t:'mc', ref:'Abschnitt 1–3', q:'Wo laufen Pyruvatoxidation und Citratzyklus ab?',
    o:['Zellplasma','Matrix der Mitochondrien','Intermembranraum','Thylakoidmembran'], a:1,
    ex:'Beides läuft in der Matrix ab. Nur die Succinat-Dehydrogenase sitzt in der inneren Membran.'},
-  {t:'mc', ref:'Abschnitt 2', q:'Was bedeutet „oxidative Decarboxylierung“ beim Pyruvat?',
+  {t:'mc', ref:'Abschnitt 2', q:'Was passiert bei der Pyruvatoxidation (oxidative Decarboxylierung) des Pyruvats?',
    o:['Anlagerung von CO₂ und Aufnahme von Elektronen','Abspaltung von CO₂ und Abgabe von Wasserstoff / Elektronen an NAD⁺','Spaltung von Wasser unter Abgabe von O₂','Verlängerung des C-Gerüsts um zwei C-Atome'], a:1,
    ex:'Decarboxylierung = CO₂-Abspaltung (C₃ → C₂). Oxidativ = Elektronen / Wasserstoff werden abgegeben und von NAD⁺ aufgenommen.'},
   {t:'num', ref:'Abschnitt 3', q:'Wie viele CO₂ gibt <u>ein</u> Durchlauf des Citratzyklus (1 Acetyl-CoA) ab?', a:2,
    ex:'2 CO₂ (Schritt 3 und 4). Das entspricht den 2 C-Atomen des aufgenommenen Acetylrests.'},
-  {t:'num', ref:'Abschnitt 2 und 3', q:'Wie viele NADH + H⁺ entstehen pro Glucose in oxidativer Decarboxylierung und Citratzyklus zusammen (ohne Glykolyse)?', a:8,
-   ex:'2 (Decarboxylierung, 2 Pyruvat) + 6 (Zyklus: 3 pro Runde × 2 Runden) = 8.'},
+  {t:'num', ref:'Abschnitt 2 und 3', q:'Wie viele NADH + H⁺ entstehen pro Glucose in Pyruvatoxidation und Citratzyklus zusammen (ohne Glykolyse)?', a:8,
+   ex:'2 (Pyruvatoxidation, 2 Pyruvat) + 6 (Zyklus: 3 pro Runde × 2 Runden) = 8.'},
   {t:'num', ref:'Gesamtbilanz', q:'Wie viele CO₂ entstehen insgesamt, wenn 1 Glucose bis zum Ende des Citratzyklus abgebaut wird?', a:6,
-   ex:'2 CO₂ aus der oxidativen Decarboxylierung + 4 CO₂ aus dem Zyklus = 6 CO₂. Das entspricht den 6 C-Atomen der Glucose.'},
+   ex:'2 CO₂ aus der Pyruvatoxidation + 4 CO₂ aus dem Zyklus = 6 CO₂. Das entspricht den 6 C-Atomen der Glucose.'},
   {t:'mc', ref:'Abschnitt 3, Schritt 6', q:'In welchem Schritt wird FAD zu FADH₂ reduziert?',
    o:['Isocitrat → α-Ketoglutarat','Fumarat → Malat','Malat → Oxalacetat','Succinat → Fumarat'], a:3,
    ex:'Die Succinat-Dehydrogenase oxidiert Succinat zu Fumarat und überträgt die Elektronen auf FAD. Sie ist zugleich Komplex II der Atmungskette.'},
